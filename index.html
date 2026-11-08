@@ -9392,6 +9392,23 @@ const MM = {
                 }
             }) : null ]));
         }
+        if (LLMX.lastStat && (LLMX.blocked || LLMX.loading)) {
+            root.appendChild(E("div", {
+                class: "mmHint"
+            }, [ E("div", {
+                id: "mmStat",
+                text: LLMX.lastStat
+            }), LLMX.blocked && !LLMX.loading ? E("button", {
+                class: "chip",
+                text: T("Trotzdem laden", "Load anyway"),
+                onclick: () => {
+                    LLMX.load(LLMX.blocked.id, {
+                        force: true
+                    });
+                    setTimeout(() => MM.refresh(), 50);
+                }
+            }) : null ]));
+        }
         root.appendChild(sec(T("Ordner & Modelle", "Folders & models")));
         root.appendChild(E("div", {
             class: "setNote",
@@ -9942,6 +9959,9 @@ const LLMX = {
         this.paint();
     },
     setStat(msg, pct) {
+        this.lastStat = msg || "";
+        const ms = document.getElementById("mmStat");
+        if (ms) ms.textContent = msg || "";
         const s = document.getElementById("llmStat");
         if (s) s.textContent = msg || "";
         const p = document.getElementById("llmProg");
@@ -10393,6 +10413,9 @@ const LLMX = {
                     budget: pl.blocked.budget
                 };
                 this.setStat(T("„" + id.split("/").pop() + "“ braucht mindestens ca. " + pl.blocked.min + " MB, für dein Gerät halte ich ca. " + pl.blocked.budget + " MB für sicher. Größere Modelle lassen die Seite auf dem Handy oft abstürzen. Nimm ein kleineres Modell (zum Beispiel SmolLM2 135M) oder tippe auf „Trotzdem laden“.", "“" + id.split("/").pop() + "” needs at least about " + pl.blocked.min + " MB, I consider about " + pl.blocked.budget + " MB safe for your device. Bigger models often crash the page on phones. Pick a smaller model (for example SmolLM2 135M) or tap “Load anyway”."), null);
+                try {
+                    MM.refresh();
+                } catch (e) {}
                 return;
             }
             const so = this.kind() !== "desk" ? {
