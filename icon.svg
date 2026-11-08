@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -50 100 100" width="512" height="512">
+<defs><radialGradient id="ob" cx=".36" cy=".28" r=".95"><stop offset="0" stop-color="#9db8ff"/><stop offset=".5" stop-color="#6370ee"/><stop offset="1" stop-color="#3b2fa6"/></radialGradient>
+<radialGradient id="hl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<filter id="bl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>
+<clipPath id="oc"><circle r="26"/></clipPath></defs>
+<rect x="-50" y="-50" width="100" height="100" fill="#0f1226"/>
+<g transform="scale(1)">
+<g><circle cx="-0.0" cy="-36.0" r="6.2" fill="#ef4444"/><circle cx="31.18" cy="-18.0" r="6.2" fill="#f5b82e"/><circle cx="31.18" cy="18.0" r="6.2" fill="#22c55e"/><circle cx="-0.0" cy="36.0" r="6.2" fill="#22d3ee"/><circle cx="-31.18" cy="18.0" r="6.2" fill="#3b82f6"/><circle cx="-31.18" cy="-18.0" r="6.2" fill="#d946ef"/></g>
+<circle r="26" fill="#5c64e0"/>
+<g clip-path="url(#oc)"><circle r="26" fill="url(#ob)"/>
+<g filter="url(#bl)"><circle cx="13" cy="-5" r="12" fill="#ff7eb6"/><circle cx="-12" cy="8" r="12" fill="#6fd8ff"/><circle cx="2" cy="14" r="10" fill="#ffc977"/><circle cx="-5" cy="-14" r="10" fill="#7ef0b8"/></g>
+<ellipse cx="-8.5" cy="-13" rx="12" ry="7.5" fill="url(#hl)" transform="rotate(-28 -8.5 -13)"/></g>
+<circle r="25.4" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="1.2"/></g></svg>
