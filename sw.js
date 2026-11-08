@@ -1,5 +1,4 @@
-/* ChatHSM Service Worker: macht die Seite offline-fähig. Nur eigene Dateien; Wetter, Wikipedia, KI-Bibliothek und Modelle laufen direkt übers Netz (bzw. den Browser-Cache). */
-const V="chathsm-v78";
+const V="chathsm-v79";
 const SHELL=["./","index.html","manifest.webmanifest","icon-192.png","icon-512.png","apple-touch-icon.png"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()));});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==V&&k.indexOf("chathsm-")===0).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
