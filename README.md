@@ -10,6 +10,7 @@ A chatbot in a single HTML file. It runs entirely in your browser, with no serve
 - General knowledge, weather and Wikipedia search (online only)
 - Learns new words and facts, remembers people, pets and details you tell it
 - Jokes, riddles, timer and small games
+- Voice input (microphone button) and read-aloud, using your browser's own speech features
 - Optional small AI model (Transformers.js), loaded by you from the ＋ menu
 - Installable as an app, works offline
 
