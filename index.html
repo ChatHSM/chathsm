@@ -45,8 +45,9 @@ html[data-theme="light"] button:focus-visible,html[data-theme="light"] .chip:foc
 *{box-sizing:border-box}
 body{background:#0a0a0a;color:#e5e5e5;font-family:system-ui,-apple-system,sans-serif;padding:0;margin:0;display:flex;flex-direction:column;height:100vh;height:100dvh}
 header{min-height:56px;flex:0 0 auto;flex-wrap:wrap;gap:6px 12px;background:#171717;border-bottom:1px solid #262626;display:flex;align-items:center;justify-content:space-between;padding:6px 16px;padding-top:env(safe-area-inset-top,0px)}
-body::before{content:"";position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top,0px);background:#171717;z-index:5;pointer-events:none}
-html[data-theme="light"] body::before{background:#fff}
+#topFix{position:fixed;left:0;right:0;top:0;width:100%;height:max(env(safe-area-inset-top,0px),12px);background:#171717;z-index:0;pointer-events:none}
+html[data-theme="light"] #topFix{background:#fff}
+header{position:relative;z-index:2}
 header h1{font-size:14px;font-weight:600;margin:0;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .hbtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 header button{white-space:nowrap;min-height:36px}
@@ -241,7 +242,7 @@ html[data-theme="light"] .mmModel{border-color:#dcdce6}html[data-theme="light"] 
 html[data-theme="light"] .mmSt.s-ready{background:#dcfce7;border-color:#86efac;color:#166534}html[data-theme="light"] .mmSt.s-cached{color:#5b21b6}html[data-theme="light"] .mmSt.s-load{color:#b45309}
 @media (prefers-reduced-motion:reduce){#plusBtn.pulse,#plusBox,#micBtn.rec{animation:none!important}}
 </style></head><body>
-<header><div class="brand"><div id="logo" class="logo" aria-hidden="true"><svg viewBox="-23 -23 46 46" width="46" height="46"><defs>
+<div id="topFix" aria-hidden="true"></div><header><div class="brand"><div id="logo" class="logo" aria-hidden="true"><svg viewBox="-23 -23 46 46" width="46" height="46"><defs>
 <filter id="goo" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceGraphic" stdDeviation="1.45" result="b"/><feColorMatrix in="b" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -11"/></filter>
 <filter id="bl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.1"/></filter>
 <radialGradient id="ob" cx=".36" cy=".28" r=".95"><stop offset="0" stop-color="#9db8ff"/><stop offset=".5" stop-color="#6370ee"/><stop offset="1" stop-color="#3b2fa6"/></radialGradient>
@@ -8643,6 +8644,25 @@ const EMO_NOINFO = new Set([ "fallback", "kb", "factual", "calc_request", "time_
 
 const FOLLOW = [ [ /Beste daran\?\s*$/, [ [ /^(?:du|dich|mit dir|dass du da bist|unser gespräch|das gespräch|das mit dir|das hier|dieses gespräch)\b/, "Das ist lieb von dir, danke! 😊 Mir macht das Gespräch mit dir auch Spaß. Was machst du heute noch?" ], [ /schule|ferien|frei|wochenende|ausschlafen|schlafen/, "Das klingt nach einem schönen Tag! Hast du für heute noch etwas vor?" ], [ /essen|pizza|döner|eis|kuchen|nudeln|burger/, "Gutes Essen macht den Tag direkt besser! Was gab es denn?" ], [ /freund|freunde|familie|mama|papa|bruder|schwester|treffen|getroffen/, "Zeit mit lieben Menschen ist oft das Beste. Was habt ihr gemacht?" ], [ /zocken|gezockt|spiel|gespielt|minecraft|roblox|fortnite|handy/, "Zocken zwischendurch tut gut! Welches Spiel war es?" ], [ /wetter|sonne|schnee|regen/, "Gutes Wetter hebt die Laune gleich! Gehst du noch raus?" ] ] ], [ /Survival-Modus\?\s*$/, [ [ /survival|überleb|ueberleb/, "Survival ist spannend: Ressourcen sammeln und die erste Nacht überstehen. Was war dein schlimmster Moment dort, ein Creeper?" ], [ /kreativ|creative|bau|riesig|projekt/, "Kreativ ist super zum Bauen ohne Stress. Was hast du zuletzt gebaut?" ], [ /hardcore/, "Hardcore, mutig! Nur ein Leben. Wie weit bist du schon gekommen?" ], [ /beides|beide|beides gern|mal so mal so/, "Beides ist ein guter Mix: erst Pläne im Kreativmodus, dann Abenteuer im Survival. Welches war dein größtes Projekt?" ] ] ], [ /allein oder gegen andere\?\s*$/, [ [ /allein|solo|alleine|für mich/, "Allein spielen hat seinen Reiz: kein Druck, eigenes Tempo. Welches Spiel spielst du dann am liebsten?" ], [ /gegen|andere|freunde|zusammen|mit anderen|online|beides/, "Mit anderen macht vieles mehr Spaß, besonders mit Freunden. Welches Spiel spielt ihr zusammen?" ] ] ] ];
 
+const YES_RE = /^(?:ja|jap|jo|joa|jaa+|jaaa+|klar|gern|gerne|ok|okay|bitte|ja bitte|ja gern|ja gerne|ja klar|ja mach|ja mach das|sehr gern|sehr gerne|mach das|los|na klar|auf jeden fall|ja unbedingt|gerne bitte|ja gerne bitte|mach|jup|jep|yep)[.!\s]*$/i;
+
+function yesOffer(rep) {
+    const m = String(rep || "").match(/Soll ich [^?]*\?\s*$/);
+    if (!m) return null;
+    const q = m[0];
+    if (/merken|empfehl|Pizza/.test(q)) return null;
+    const ks = [ [ "Witz", "Erzähl mir einen Witz" ], [ "Fun Fact", "Fun Fact" ], [ "Rätsel", "Stell mir ein Rätsel" ], [ "Ideen", "Mir ist langweilig" ] ];
+    let best = null, bi = 1e9;
+    for (const [k, c] of ks) {
+        const i = q.indexOf(k);
+        if (i >= 0 && i < bi) {
+            bi = i;
+            best = c;
+        }
+    }
+    return best;
+}
+
 function runCore(text) {
     {
         const k = KBU.hook(text);
@@ -8651,6 +8671,16 @@ function runCore(text) {
     const r = LANG === "en" ? enOne(text) : softFb(runOne0(text), text);
     try {
         KBU.note(r);
+    } catch (e) {}
+    try {
+        state.yesQ = null;
+        if (LANG !== "en" && r && r.reply) {
+            const yc = yesOffer(r.reply);
+            if (yc) state.yesQ = {
+                t: (state.msgs || []).length,
+                cmd: yc
+            };
+        }
     } catch (e) {}
     try {
         if (LANG !== "en" && r && r.reply) {
@@ -8825,6 +8855,11 @@ const BOTQ = [ [ /^(?:bist du|fühlst du dich) (?:gerade |heute |auch |manchmal 
 function chatHook(text) {
     const t = text.trim();
     if (!t || t.length > 90) return null;
+    if (state.yesQ) {
+        const y = state.yesQ;
+        state.yesQ = null;
+        if (y.t === (state.msgs || []).length - 1 && YES_RE.test(t)) return runOne0(y.cmd);
+    }
     if (state.pzYes !== undefined) {
         const yz = state.pzYes === (state.msgs || []).length - 1;
         state.pzYes = undefined;
